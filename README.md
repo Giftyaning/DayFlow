@@ -1,6 +1,7 @@
 # DayFlow Planner
 DayFlow is a minimalist web application designed to streamline your workday scheduling. With its intuitive interface and essential features, DayFlow empowers users to efficiently manage their daily tasks and appointments.
 
+![DayFlow Planner](assets/images/app.jpeg)
 
 
 FEATURES:
