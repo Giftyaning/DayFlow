@@ -28,43 +28,51 @@ $(document).ready(function () {
     container.append(timeBlock);
   });
 
-  // Function to color code rows
-  function colorRow(time) {
-    let currentTime = parseInt(dayjs().format("H"));
-    let hour = parseInt(time.split(":")[0]);
-    if (hour < currentTime) {
-      return "past";
-    } else if (hour === currentTime) {
-      return "present";
-    } else {
-      return "future";
-    }
-  }
-
   // Apply color coding to time blocks
-  $(".time-block").each(function (index) {
-    $(this).addClass(colorRow(workDayTimes[index]));
-  });
+  setColorCode();
 
   // Save event on button click
-  $(".saveBtn").on("click", function () {
-    let index = $(".saveBtn").index(this);
-    let description = $(this).siblings(".description").val();
-
-    localStorage.setItem("event_" + index, description);
-    alert("Event saved!");
-  });
-
-  // Load events from local storage
-  function loadEvents() {
-    $(".description").each(function (index) {
-      let event = localStorage.getItem("event_" + index);
-      if (event !== null) {
-        $(this).val(event);
-      }
-    });
-  }
+  $(".saveBtn").on("click", handleSaveButtonClick);
 
   // Load events when the page is loaded
   loadEvents();
 });
+
+function setColorCode() {
+  const now = new Date().getHours();
+
+  $(".time-block").each(function () {
+    const eventHour = parseInt($(this).find(".hour").text());
+    const eventInput = $(this).find(".description");
+
+    if (eventHour < now) {
+      eventInput.addClass("past");
+    } else if (eventHour === now) {
+      eventInput.addClass("present");
+    } else {
+      eventInput.addClass("future");
+    }
+  });
+}
+
+function handleSaveButtonClick(event) {
+  const timeblock = event.target.closest(".time-block");
+  const eventInput = timeblock.find(".description");
+  const eventText = eventInput.val();
+  const eventHour = timeblock.find(".hour").text();
+
+  // Save event in local storage using the hour as the key
+  localStorage.setItem(eventHour, eventText);
+}
+
+function loadEvents() {
+  $(".time-block").each(function () {
+    const eventHour = $(this).find(".hour").text();
+    const eventInput = $(this).find(".description");
+    const savedEvent = localStorage.getItem(eventHour);
+
+    if (savedEvent) {
+      eventInput.val(savedEvent);
+    }
+  });
+}
